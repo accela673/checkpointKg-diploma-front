@@ -1,0 +1,71 @@
+.navbar-pc {
+  background-color: #3b82f6;
+  color: white;
+  padding: 1rem 0;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+  }
+
+  .nav-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+
+      a {
+        text-decoration: none;
+        color: white;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .auth-links {
+      display: flex;
+      gap: 1rem;
+
+      a,
+      .button {
+        text-decoration: none;
+        background-color: white;
+        color: #3b82f6;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: #e5e7eb;
+        }
+      }
+
+      button {
+        border: none;
+        cursor: pointer;
+      }
+    }
+  }
+
+  // Прячем на маленьких экранах
+  @media (max-width: 768px) {
+    display: none;
+  }
+}

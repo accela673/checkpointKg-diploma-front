@@ -40,6 +40,7 @@ const Register: React.FC = () => {
         navigate('/confirm-email');
       }
     } catch (error) {
+      console.log(error)
       setError('Ошибка при регистрации');
     } finally {
       setLoading(false);

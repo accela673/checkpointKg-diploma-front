@@ -30,6 +30,7 @@ const ConfirmEmail: React.FC = () => {
         navigate('/login');  // Перенаправление на страницу входа
       }
     } catch (error) {
+      console.log(error)
       setError('Ошибка при подтверждении email');
     } finally {
       setLoading(false);
@@ -52,6 +53,7 @@ const ConfirmEmail: React.FC = () => {
         window.location.reload();  // Сброс таймера на 60 секунд после успешной отправки
       }
     } catch (error) {
+      console.log(error)
       setError('Ошибка при повторной отправке кода');
     } finally {
       setResendLoading(false);

@@ -18,11 +18,13 @@ const Login: React.FC = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       if (response.status >= 200 && response.status < 300) {
-        // Успешный вход
+        localStorage.setItem('access_token', response.data.access_token);  // Сохраните токен
+        localStorage.setItem('role', response.data.role); 
         alert('Вы успешно вошли в систему!');
         navigate('/');
       }
     } catch (error) {
+      console.log(error)
       setError('Ошибка при входе');
     } finally {
       setLoading(false);
