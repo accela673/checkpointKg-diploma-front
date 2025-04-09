@@ -1,0 +1,84 @@
+.hotel-page {
+  padding: 20px;
+}
+
+.hotel-title {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.hotel-info {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.hotel-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(336px, 1fr));  /* Увеличиваем минимальный размер картинок на 20% */
+  gap: 30px;  /* Увеличиваем расстояние между изображениями */
+  margin-bottom: 20px;
+}
+
+.hotel-image-thumbnail {
+  width: 100%;  /* Занимает всю доступную ширину */
+  max-width: 100%;  /* Не выходит за пределы контейнера */
+  max-height: 420px;  /* Увеличиваем высоту на 20% */
+  height: auto;  /* Пропорциональная высота */
+  object-fit: contain;  /* Сохраняет пропорции */
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.hotel-image-thumbnail:hover {
+  transform: scale(1.05);  /* Увеличиваем изображение при наведении */
+}
+
+.hotel-details {
+  flex: 1;
+  max-width: 720px;  /* Увеличиваем ширину блока с информацией на 20% */
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hotel-details p {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.hotel-details a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.hotel-details a:hover {
+  text-decoration: underline;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal img {
+  max-width: 90%;
+  max-height: 80%;
+  object-fit: contain;
+}

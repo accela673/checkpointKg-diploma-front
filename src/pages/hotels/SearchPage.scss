@@ -1,0 +1,163 @@
+.search-page {
+    padding: 20px;
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .hotel-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Плавное увеличение и тень при наведении */
+    position: relative;
+  }
+  
+  .hotel-card:hover {
+    transform: scale(1.05); /* Увеличение карточки при наведении */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Увеличение тени при наведении */
+  }
+  
+  .image-container {
+    position: relative;
+    width: 100%;
+    height: 200px; /* Фиксированная высота для изображения */
+    overflow: hidden;
+  }
+  
+  .hotel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Изображение будет обрезано, чтобы заполнить блок */
+    border-bottom: 2px solid #ddd; /* Линия снизу изображения */
+  }
+  
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;  /* Круглая кнопка */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .arrow:hover {
+    background-color: rgba(30, 30, 30, 0.8);
+  }
+  
+  .arrow.left {
+    left: 10px;
+  }
+  
+  .arrow.right {
+    right: 10px;
+  }
+  
+  /* Стрелка влево */
+  .arrow.left::before {
+    content: '<';  /* Символ стрелки влево */
+    font-size: 24px;
+    color: white;
+    position: absolute;  /* Абсолютное позиционирование для центрирования */
+    top: 45%;
+    left: 45%;
+    transform: translate(-50%, -50%); /* Центрирование стрелки */
+  }
+  
+  /* Стрелка вправо */
+  .arrow.right::before {
+    content: '>';  /* Символ стрелки вправо */
+    font-size: 24px;
+    color: white;
+    position: absolute;  /* Абсолютное позиционирование для центрирования */
+    top: 45%;
+    left: 55%;
+    transform: translate(-50%, -50%); /* Центрирование стрелки */
+  }
+  .card-content {
+    padding: 15px;
+  }
+  
+  .card-content h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .card-content p {
+    font-size: 1rem;
+    color: #555;
+    margin: 5px 0;
+  }
+  
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    padding: 10px 20px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pagination button:hover {
+    background-color: #2563eb;
+  }
+  
+  .pagination button:disabled {
+    background-color: #e5e7eb;
+    cursor: not-allowed;
+  }
+  
+  .pagination span {
+    font-size: 1rem;
+  }
+
+  .card-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 0;
+  }
+  
+  @media (max-width: 1200px) {
+    .card-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .card-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .card-list {
+      grid-template-columns: 1fr;
+    }
+  }

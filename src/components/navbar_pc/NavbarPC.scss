@@ -13,27 +13,31 @@
   }
 
   .logo {
-    font-size: 1.5rem;
+    margin-left: 0rem;
+    font-size: 1.8rem;
     font-weight: bold;
     text-decoration: none;
     color: white;
   }
 
   .nav-wrapper {
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
     gap: 2rem;
 
     .nav-links {
       display: flex;
-      gap: 1.5rem;
+      gap: 2.5rem;
 
       a {
-        text-decoration: none;
+        text-decoration: none;  /* Убираем подчеркивание */
         color: white;
+        padding: 0.5rem 0; /* Немного добавим отступов для улучшения кликабельности */
+        transition: color 0.3s; /* Плавный переход для цвета текста */
 
         &:hover {
-          text-decoration: underline;
+          color: rgba(255, 255, 255, 0.7); /* Затемнение текста при наведении */
         }
       }
     }

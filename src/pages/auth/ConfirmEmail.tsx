@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+
 const ConfirmEmail: React.FC = () => {
   const [email, setEmail] = useState(localStorage.getItem('email') || '');  // Получаем email из localStorage
   const [code, setCode] = useState('');
@@ -14,6 +15,7 @@ const ConfirmEmail: React.FC = () => {
   const [resendSuccess, setResendSuccess] = useState(false);
   const [timer, setTimer] = useState(60); // Таймер для кнопки отправки
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_URL
 
   // Функция подтверждения email
   const handleConfirmEmail = async (e: React.FormEvent) => {
@@ -23,7 +25,7 @@ const ConfirmEmail: React.FC = () => {
     setSuccess(false);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/confirmEmail', { email, code });
+      const response = await axios.post(`${url}/api/auth/confirmEmail`, { email, code });
       if (response.status >= 200 && response.status < 300) {
         setSuccess(true);
         alert(`Аккаунт активирован успешно!`);
@@ -46,7 +48,7 @@ const ConfirmEmail: React.FC = () => {
     setError('');
 
     try {
-      const response = await axios.patch('http://localhost:5000/api/auth/sendCodeAgain', { email });
+      const response = await axios.patch(`${url}/api/auth/sendCodeAgain`, { email });
       if (response.status >= 200 && response.status < 300) {
         setResendSuccess(true);
         alert(`Код отправлен заново на имейл ${email}`);

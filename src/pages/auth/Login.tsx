@@ -10,16 +10,20 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_URL
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const response = await axios.post(`${url}/api/auth/login`, { email, password });
       if (response.status >= 200 && response.status < 300) {
-        localStorage.setItem('access_token', response.data.access_token);  // Сохраните токен
+        localStorage.setItem('access_token', response.data.access_token);
         localStorage.setItem('role', response.data.role); 
+        const currentTime = Date.now();
+        localStorage.setItem("loginTime", currentTime.toString());
         alert('Вы успешно вошли в систему!');
         navigate('/');
       }

@@ -14,6 +14,8 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_URL
+
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +29,7 @@ const Register: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/auth/register/${role}`, {
+      const response = await axios.post(`${url}/api/auth/register/${role}`, {
         firstName,
         lastName,
         email,

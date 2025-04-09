@@ -1,13 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import ConfirmEmail from "./pages/ConfirmEmail";
+import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
+import ConfirmEmail from "./pages/auth/ConfirmEmail";
 import AdminPage from "./pages/AdminPage";
-import ProfilePage from "./pages/ProfilePage";
+import ProfilePage from "./pages/profile/ProfilePage";
+import HotelsPage from "./pages/hotels/HotelsPage";
+
 import NavbarPC from "./components/navbar_pc/NavbarPC";
 import NavbarMobile from "./components/navbar_mobile/NavbarMobile";
 import { useEffect, useState } from "react";
+import OneHotelPage from "./pages/hotels/OneHotelPage";
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -28,6 +31,9 @@ function App() {
         <Route path="/confirm-email" element={<ConfirmEmail />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/search" element={<HotelsPage />} />
+        <Route path="/hotels/:id" element={<OneHotelPage />} /> 
+
       </Routes>
     </Router>
   );
