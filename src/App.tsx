@@ -4,13 +4,15 @@ import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import ConfirmEmail from "./pages/auth/ConfirmEmail";
 import AdminPage from "./pages/AdminPage";
-import ProfilePage from "./pages/profile/ProfilePage";
+import AddHotelForm from "./pages/profile/forms/AddNewHotel";
 import HotelsPage from "./pages/hotels/HotelsPage";
 
 import NavbarPC from "./components/navbar_pc/NavbarPC";
 import NavbarMobile from "./components/navbar_mobile/NavbarMobile";
 import { useEffect, useState } from "react";
 import OneHotelPage from "./pages/hotels/OneHotelPage";
+import ProfilePage from "./pages/profile/ProfilePage";
+import AddRoomForm from "./pages/hotels/forms/AddRoomForm";
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -31,6 +33,8 @@ function App() {
         <Route path="/confirm-email" element={<ConfirmEmail />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/add-hotel" element={<AddHotelForm />} />
+        <Route path="/add-room/:id" element={<AddRoomForm/>} />
         <Route path="/search" element={<HotelsPage />} />
         <Route path="/hotels/:id" element={<OneHotelPage />} /> 
 

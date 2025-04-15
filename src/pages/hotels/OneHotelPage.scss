@@ -7,7 +7,6 @@
   font-size: 3rem;
   margin-bottom: 20px;
 }
-
 .hotel-info {
   display: flex;
   gap: 20px;
@@ -15,49 +14,71 @@
   justify-content: space-between;
 }
 
+.hotel-details {
+  flex: 1;
+  max-width: 720px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 15px; // <-- Увеличено расстояние между элементами
+  font-size: 1.05rem;
+  line-height: 1.6;
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: #0645ad; // классический синий цвет ссылки
+    text-decoration: underline;
+
+    &:hover {
+      color: #0b61d8;
+    }
+  }
+}
+
 .hotel-images {
+  flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(336px, 1fr));  /* Увеличиваем минимальный размер картинок на 20% */
-  gap: 30px;  /* Увеличиваем расстояние между изображениями */
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
 }
 
 .hotel-image-thumbnail {
-  width: 100%;  /* Занимает всю доступную ширину */
-  max-width: 100%;  /* Не выходит за пределы контейнера */
-  max-height: 420px;  /* Увеличиваем высоту на 20% */
-  height: auto;  /* Пропорциональная высота */
-  object-fit: contain;  /* Сохраняет пропорции */
+  width: 100%;
+  height: auto;
+  object-fit: cover;
   border-radius: 10px;
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
 }
 
 .hotel-image-thumbnail:hover {
-  transform: scale(1.05);  /* Увеличиваем изображение при наведении */
+  transform: scale(1.05);
 }
 
-.hotel-details {
-  flex: 1;
-  max-width: 720px;  /* Увеличиваем ширину блока с информацией на 20% */
-  padding: 15px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 768px) {
+  .hotel-info {
+    flex-direction: column; /* Ставим элементы в колонку */
+  }
 
-.hotel-details p {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-}
+  .hotel-details {
+    order: 1; /* Информация будет сверху */
+  }
 
-.hotel-details a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.hotel-details a:hover {
-  text-decoration: underline;
+  .hotel-images {
+    order: 2; /* Фотографии будут снизу */
+  }
 }
 
 .modal {
@@ -78,7 +99,23 @@
 }
 
 .modal img {
-  max-width: 90%;
-  max-height: 80%;
-  object-fit: contain;
+  max-width: 90%; /* Ограничиваем ширину изображения */
+  max-height: 80%; /* Ограничиваем высоту изображения */
+  object-fit: contain; /* Изображения сохраняют пропорции, не обрезаются */
+}
+
+.add-room-btn {
+  margin: 20px 0;
+  padding: 10px 20px;
+  background-color: #45a049;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #4caf50;
+  }
 }

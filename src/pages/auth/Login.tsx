@@ -22,10 +22,12 @@ const Login: React.FC = () => {
       if (response.status >= 200 && response.status < 300) {
         localStorage.setItem('access_token', response.data.access_token);
         localStorage.setItem('role', response.data.role); 
+        localStorage.setItem('id', response.data.id); 
         const currentTime = Date.now();
         localStorage.setItem("loginTime", currentTime.toString());
         alert('Вы успешно вошли в систему!');
-        navigate('/');
+        navigate('/profile');
+        window.location.reload()
       }
     } catch (error) {
       console.log(error)

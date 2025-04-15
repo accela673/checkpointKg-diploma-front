@@ -88,7 +88,7 @@ const SearchPage = () => {
             )}
             <div className="card-content">
               <h2>{hotel.name}</h2>
-              <p><strong>Комнат:</strong> {hotel.rooms}</p>
+              <p><strong>Номеров:</strong> {hotel.rooms.length}</p>
               <p><strong>Описание:</strong> {hotel.description}</p>
               <p><strong>Адрес:</strong> {hotel.address}</p>
             </div>

@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom"; // Импортируем Link
 import "./OneHotelPage.scss";
 
 const OneHotelPage = () => {
-  const { id } = useParams();  // Получаем id из URL
+  const { id } = useParams();
   const [hotel, setHotel] = useState(null);
-  const [modalImage, setModalImage] = useState(null);  // Состояние для модального окна с изображением
-  const url = import.meta.env.VITE_URL;  // URL для API
+  const [modalImage, setModalImage] = useState(null);
+  const url = import.meta.env.VITE_URL;
+  const userId = localStorage.getItem("id");
 
   useEffect(() => {
     const fetchHotelData = async () => {
       try {
         const response = await axios.get(`${url}/api/hotels/one/${id}`);
-        setHotel(response.data);  // Сохраняем полученные данные о гостинице
+        setHotel(response.data);
       } catch (error) {
         console.error("Error fetching hotel data:", error);
       }
@@ -23,34 +24,40 @@ const OneHotelPage = () => {
   }, [id]);
 
   const handleImageClick = (image) => {
-    setModalImage(image);  // Открытие модального окна с изображением
+    setModalImage(image);
   };
 
   const closeModal = () => {
-    setModalImage(null);  // Закрытие модального окна
+    setModalImage(null);
   };
 
-  if (!hotel) {
-    return <div>Loading...</div>;  // Пока данные не загружены
-  }
+  if (!hotel) return <div>Loading...</div>;
 
   return (
     <div className="hotel-page">
       <h1 className="hotel-title">{hotel.name}</h1>
 
+      {/* Кнопка только для владельца, перенаправляющая на страницу добавления номера */}
+      {+hotel.landlord.id === +userId && (
+        <Link to={`/add-room/${hotel.id}`}>
+          <button className="add-room-btn">
+            Добавить номер
+          </button>
+        </Link>
+      )}
+
       <div className="hotel-info">
-        {/* Информация справа */}
         <div className="hotel-details">
-          <p><strong>Комнат:</strong> {hotel.rooms}</p>
+          <p><strong>Всего комнат:</strong> {hotel.rooms.length}</p>
+          <p><strong>Свободных комнат:</strong> {hotel.availableRoomsCount}</p>
           <p><strong>Описание:</strong> {hotel.description}</p>
           <p><strong>Адрес:</strong> {hotel.address}</p>
           <p><strong>Телефон:</strong> <a href={`tel:${hotel.phoneNumber}`}>{hotel.phoneNumber}</a></p>
           <p><strong>Telegram:</strong> <a href={`https://t.me/${hotel.telegram}`}>{hotel.telegram}</a></p>
-          <p><strong>TwoGis:</strong> <a href={hotel.twoGisURL} target="_blank" rel="noopener noreferrer">Ссылка на 2GIS</a></p>
+          <p><strong>2Gis:</strong> <a href={hotel.twoGisURL} target="_blank" rel="noopener noreferrer">Ссылка на 2GIS</a></p>
           <p><strong>Google Maps:</strong> <a href={hotel.googleMapsURL} target="_blank" rel="noopener noreferrer">Ссылка на Google Maps</a></p>
         </div>
 
-        {/* Изображения слева в коробке */}
         <div className="hotel-images">
           {hotel.photos?.map((photo, index) => (
             <div className="hotel-image-thumbnail-wrapper" key={index}>
@@ -59,14 +66,13 @@ const OneHotelPage = () => {
                 alt={`hotel-image-${index}`}
                 className="hotel-image-thumbnail"
                 crossOrigin="anonymous"
-                onClick={() => handleImageClick(photo)}  // Открытие изображения в модальном окне
+                onClick={() => handleImageClick(photo)}
               />
             </div>
           ))}
         </div>
       </div>
 
-      {/* Модальное окно с изображением */}
       {modalImage && (
         <div className="modal active" onClick={closeModal}>
           <img src={modalImage} alt="Modal" crossOrigin="anonymous" />

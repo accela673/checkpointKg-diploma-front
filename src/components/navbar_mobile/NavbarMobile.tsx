@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './NavbarMobile.scss';
 
 const NavbarMobile = () => {
@@ -14,6 +14,8 @@ const NavbarMobile = () => {
     setAccessToken(token);
     setRole(userRole);
   }, []);
+
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen((prevState) => !prevState);
@@ -68,7 +70,9 @@ const NavbarMobile = () => {
             <button
               onClick={() => {
                 localStorage.clear();
-                window.location.reload();
+                closeMenu()
+                navigate('/')
+                window.location.reload()
               }}
               className="button"
             >
