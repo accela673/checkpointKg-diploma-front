@@ -1,0 +1,136 @@
+.hotel-rooms-page {
+    padding: 20px;
+  }
+  
+  .hotel-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+  }
+  
+  .rooms-list {
+    display: block;
+  }
+  
+  .room-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .room-item h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .room-item p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .room-images {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .room-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .room-image:hover {
+    transform: scale(1.1);
+  }
+  
+  .book-room-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .book-room-btn:hover {
+    background-color: #45a049;
+  }
+  
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+ /* Стили для кнопок */
+.book-room-btn, .release-room-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.book-room-btn:hover {
+    background-color: #45a049;
+}
+
+.release-room-btn {
+    background-color: #e53935;
+}
+
+.release-room-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Модальное окно */
+.modal-content {
+    position: relative;
+    max-width: 40%; /* 40% ширины для модалки */
+    max-height: 80%; /* Ограничение по высоте */
+    overflow: hidden;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modal-image {
+    width: 100%; /* Ширина изображения на 100% */
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* Кнопка закрытия модального окна */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+  

@@ -37,6 +37,13 @@ const OneHotelPage = () => {
     <div className="hotel-page">
       <h1 className="hotel-title">{hotel.name}</h1>
 
+      {/* Кнопка для перехода на страницу с комнатами */}
+      <Link to={`/hotel-rooms/${hotel.id}`}>
+        <button className="view-rooms-btn">
+          Посмотреть свободные номера
+        </button>
+      </Link>
+
       {/* Кнопка только для владельца, перенаправляющая на страницу добавления номера */}
       {+hotel.landlord.id === +userId && (
         <Link to={`/add-room/${hotel.id}`}>

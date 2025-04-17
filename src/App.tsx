@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import OneHotelPage from "./pages/hotels/OneHotelPage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import AddRoomForm from "./pages/hotels/forms/AddRoomForm";
+import HotelRoomsPage from "./pages/rooms/HotelRoomsPAge";
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -37,7 +38,7 @@ function App() {
         <Route path="/add-room/:id" element={<AddRoomForm/>} />
         <Route path="/search" element={<HotelsPage />} />
         <Route path="/hotels/:id" element={<OneHotelPage />} /> 
-
+        <Route path="/hotel-rooms/:hotelId" element={<HotelRoomsPage />} />
       </Routes>
     </Router>
   );
