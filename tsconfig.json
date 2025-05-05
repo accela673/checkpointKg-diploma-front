@@ -1,4 +1,6 @@
 {
+  "noImplicitAny": false,
+  "skipLibCheck": true,
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
