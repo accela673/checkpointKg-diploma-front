@@ -1,21 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-const AddRoomForm = () => {
-  const [roomData, setRoomData] = useState({
+interface RoomData {
+  number: string;
+  description: string;
+  roomsNumber: string;
+  photos: File[];
+}
+
+const AddRoomForm: React.FC = () => {
+  const [roomData, setRoomData] = useState<RoomData>({
     number: "",
     description: "",
     roomsNumber: "",
     photos: [],
   });
 
-  const { id: hotelId } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);  // Добавляем состояние для ховера
+  const { id: hotelId } = useParams<Record<string, string | undefined>>(); // Исправлено
 
-  const url = import.meta.env.VITE_URL
-  const handleInputChange = (e) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+
+  const url = import.meta.env.VITE_URL;
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setRoomData((prevData) => ({
       ...prevData,
@@ -23,7 +32,7 @@ const AddRoomForm = () => {
     }));
   };
 
-  const handleNumberChange = (e) => {
+  const handleNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setRoomData((prevData) => ({
       ...prevData,
@@ -31,8 +40,8 @@ const AddRoomForm = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
     if (files.length + roomData.photos.length > 10) {
       alert("Вы можете загрузить не более 10 фотографий.");
       return;
@@ -43,50 +52,50 @@ const AddRoomForm = () => {
     }));
   };
 
-  const handleRemoveFile = (index) => {
+  const handleRemoveFile = (index: number) => {
     setRoomData((prevData) => ({
       ...prevData,
       photos: prevData.photos.filter((_, i) => i !== index),
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (!hotelId) return;
     setIsLoading(true);
-  
+
     try {
       const formData = new FormData();
       formData.append("number", roomData.number);
       formData.append("description", roomData.description);
       formData.append("roomsNumber", roomData.roomsNumber);
-  
+
       roomData.photos.forEach((photo) => {
         formData.append("photos", photo);
       });
-      const token = localStorage.getItem("access_token"); // если токен хранится в localStorage
-  
+
+      const token = localStorage.getItem("access_token");
+
       const response = await axios.post(
         `${url}/api/rooms/${hotelId}`,
         formData,
         {
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
-  
+
       console.log("Room added successfully:", response.data);
-      alert('Успех!')
-      window.location.reload()
-      // Можно сбросить форму, показать уведомление и т.д.
+      alert("Успех!");
+      window.location.reload();
     } catch (error) {
       console.error("Error adding room:", error);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px", backgroundColor: "#f9f9f9", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
       <h2 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "24px" }}>Добавить номер</h2>

@@ -1,19 +1,40 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom"; // Импортируем Link
+import { useParams, Link } from "react-router-dom";
 import "./OneHotelPage.scss";
 
-const OneHotelPage = () => {
-  const { id } = useParams();
-  const [hotel, setHotel] = useState(null);
-  const [modalImage, setModalImage] = useState(null);
+// Типы
+type Landlord = {
+  id: number;
+  name: string;
+};
+
+type Hotel = {
+  id: number;
+  name: string;
+  description: string;
+  address: string;
+  phoneNumber: string;
+  telegram: string;
+  twoGisURL: string;
+  googleMapsURL: string;
+  photos: string[];
+  rooms: any[]; // Можно уточнить типы, если известна структура
+  availableRoomsCount: number;
+  landlord: Landlord;
+};
+
+const OneHotelPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const [hotel, setHotel] = useState<Hotel | null>(null);
+  const [modalImage, setModalImage] = useState<string | null>(null);
   const url = import.meta.env.VITE_URL;
   const userId = localStorage.getItem("id");
 
   useEffect(() => {
     const fetchHotelData = async () => {
       try {
-        const response = await axios.get(`${url}/api/hotels/one/${id}`);
+        const response = await axios.get<Hotel>(`${url}/api/hotels/one/${id}`);
         setHotel(response.data);
       } catch (error) {
         console.error("Error fetching hotel data:", error);
@@ -21,9 +42,9 @@ const OneHotelPage = () => {
     };
 
     fetchHotelData();
-  }, [id]);
+  }, [id, url]);
 
-  const handleImageClick = (image) => {
+  const handleImageClick = (image: string) => {
     setModalImage(image);
   };
 
@@ -37,15 +58,13 @@ const OneHotelPage = () => {
     <div className="hotel-page">
       <h1 className="hotel-title">{hotel.name}</h1>
 
-      {/* Кнопка для перехода на страницу с комнатами */}
       <Link to={`/hotel-rooms/${hotel.id}`}>
         <button className="view-rooms-btn">
           Посмотреть свободные номера
         </button>
       </Link>
 
-      {/* Кнопка только для владельца, перенаправляющая на страницу добавления номера */}
-      {+hotel.landlord.id === +userId && (
+      {+hotel.landlord.id === +userId! && (
         <Link to={`/add-room/${hotel.id}`}>
           <button className="add-room-btn">
             Добавить номер

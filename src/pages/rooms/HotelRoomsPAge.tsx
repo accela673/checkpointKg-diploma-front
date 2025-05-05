@@ -3,24 +3,41 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import "./HotelRoomsPage.scss";
 
-const HotelRoomsPage = () => {
-  const { hotelId } = useParams();
-  const [hotel, setHotel] = useState(null);
-  const [rooms, setRooms] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null); // Для отслеживания выбранного изображения
+interface Room {
+  id: string;
+  number: string;
+  description: string;
+  roomsNumber: number;
+  isBooked: boolean;
+  photos: string[];
+}
+
+interface Hotel {
+  id: string;
+  name: string;
+  rooms: Room[];
+  landlord?: {
+    id: string;
+  };
+}
+
+const HotelRoomsPage: React.FC = () => {
+  const { hotelId } = useParams<{ hotelId: string }>();
+  const [hotel, setHotel] = useState<Hotel | null>(null);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const url = import.meta.env.VITE_URL;
-  const userId = localStorage.getItem("id");
-  const userRole = localStorage.getItem("role"); // Получаем роль пользователя (CLIENT или LANDLORD)
+  const userRole = localStorage.getItem("role");
   const navigate = useNavigate();
 
-  // Функция для бронирования
-  const bookRoom = async (roomId) => {
+  const bookRoom = async (roomId: string) => {
     try {
-      const token = localStorage.getItem("access_token"); // Получаем токен
+      const token = localStorage.getItem("access_token");
       if (!token) {
-        navigate("/login"); // Перенаправляем на страницу логина, если нет токена
-      }  
-      const response = await axios.put(
+        navigate("/login");
+        return;
+      }
+      await axios.put(
         `${url}/api/rooms/book/one/${roomId}`,
         {},
         {
@@ -29,9 +46,9 @@ const HotelRoomsPage = () => {
           },
         }
       );
-      alert("Заабронировано!");
-      setRooms(
-        rooms.map((room) =>
+      alert("Забронировано!");
+      setRooms(prev =>
+        prev.map((room) =>
           room.id === roomId ? { ...room, isBooked: true } : room
         )
       );
@@ -40,14 +57,14 @@ const HotelRoomsPage = () => {
     }
   };
 
-  // Функция для освобождения комнаты (для LANDLORD)
-  const releaseRoom = async (roomId) => {
+  const releaseRoom = async (roomId: string) => {
     try {
-      const token = localStorage.getItem("access_token"); // Получаем токен
+      const token = localStorage.getItem("access_token");
       if (!token) {
-        navigate("/login"); // Перенаправляем на страницу логина, если нет токена
+        navigate("/login");
+        return;
       }
-      const response = await axios.put(
+      await axios.put(
         `${url}/api/rooms/release/one/${roomId}`,
         {},
         {
@@ -57,8 +74,8 @@ const HotelRoomsPage = () => {
         }
       );
       alert("Комната освобождена!");
-      setRooms(
-        rooms.map((room) =>
+      setRooms(prev =>
+        prev.map((room) =>
           room.id === roomId ? { ...room, isBooked: false } : room
         )
       );
@@ -67,27 +84,27 @@ const HotelRoomsPage = () => {
     }
   };
 
-  // Обработчик для клика по изображению
-  const handleImageClick = (image) => {
-    setSelectedImage(image); // Устанавливаем выбранное изображение в состояние
+  const handleImageClick = (image: string) => {
+    setSelectedImage(image);
   };
 
   const handleCloseModal = () => {
-    setSelectedImage(null); // Закрываем модальное окно
+    setSelectedImage(null);
   };
 
   useEffect(() => {
     const fetchHotelData = async () => {
       try {
         const response = await axios.get(`${url}/api/hotels/one/${hotelId}`);
-        setHotel(response.data);
-        setRooms(response.data.rooms); // Получаем комнаты отеля
+        const hotelData: Hotel = response.data;
+        setHotel(hotelData);
+        setRooms(hotelData.rooms || []);
       } catch (error) {
         console.error("Error fetching hotel data:", error);
       }
     };
 
-    fetchHotelData();
+    if (hotelId) fetchHotelData();
   }, [hotelId]);
 
   if (!hotel) return <div>Loading...</div>;
@@ -103,7 +120,6 @@ const HotelRoomsPage = () => {
             <p><strong>Описание:</strong> {room.description}</p>
             <p><strong>Количество комнат:</strong> {room.roomsNumber}</p>
 
-            {/* Список изображений */}
             <div className="room-images">
               {room.photos?.map((photo, index) => (
                 <img
@@ -112,38 +128,32 @@ const HotelRoomsPage = () => {
                   alt={`room-image-${index}`}
                   className="room-image"
                   crossOrigin="anonymous"
-                  onClick={() => handleImageClick(photo)} // При клике на картинку вызываем функцию
+                  onClick={() => handleImageClick(photo)}
                 />
               ))}
             </div>
 
-            {/* В зависимости от роли показываем кнопку */}
-            {userRole === "LANDLORD" && hotel?.landlord?.id ? (
-              // Если роль LANDLORD, показываем кнопку для освобождения комнаты
+            {userRole === "LANDLORD" && hotel.landlord?.id ? (
               <button
                 className="release-room-btn"
-                onClick={() => releaseRoom(room.id)} // Освобождение комнаты
+                onClick={() => releaseRoom(room.id)}
               >
                 Освободить
               </button>
+            ) : !room.isBooked ? (
+              <button
+                className="book-room-btn"
+                onClick={() => bookRoom(room.id)}
+              >
+                Забронировать
+              </button>
             ) : (
-              // Если роль CLIENT, показываем кнопку для бронирования
-              !room.isBooked ? (
-                <button
-                  className="book-room-btn"
-                  onClick={() => bookRoom(room.id)} // Бронирование комнаты
-                >
-                  Забронировать
-                </button>
-              ) : (
-                <p>Этот номер забронирован</p>
-              )
+              <p>Этот номер забронирован</p>
             )}
           </div>
         ))}
       </div>
 
-      {/* Модальное окно для отображения картинки */}
       {selectedImage && (
         <div className="modal" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
