@@ -89,8 +89,6 @@ const SearchPage = () => {
   const filteredHotels = hotels.filter((hotel) => {
     // Чтобы фильтрация по региону и типу работала корректно с переводами,
     // сравним их значения с исходными ключами:
-    const regionKey = regions.findIndex((r) => r === hotel.region);
-    const selectedRegionKey = regions.findIndex((r) => r === regionFilter);
     const matchesRegion = regionFilter ? regionFilter === hotel.region : true;
 
     const matchesType = typeFilter ? hotel.type === typeFilter : true;

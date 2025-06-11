@@ -67,7 +67,7 @@ const AddHotelForm = () => {
     });
 
     try {
-      const response = await axios.post(`${url}/api/hotels/${hotelData.type}`, formData, {
+      await axios.post(`${url}/api/hotels/${hotelData.type}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
