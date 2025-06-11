@@ -162,7 +162,39 @@
     "passwordMismatch": "Пароли не совпадают",
     "error": "Ошибка при регистрации",
     "successAlert": "Вы успешно зарегистрированы! Пожалуйста, подтвердите ваш email."
-  }
+  },
+   "hotel": {
+    "rooms": "Комнаты",
+    "description": "Описание",
+    "roomsNumber": "Количество комнат",
+    "book": "Забронировать",
+    "release": "Освободить",
+    "booked": "Этот номер забронирован",
+    "bookedSuccess": "Забронировано!",
+    "releasedSuccess": "Комната освобождена!",
+    "bookError": "Ошибка при бронировании",
+    "releaseError": "Ошибка при освобождении комнаты"
+  },
+  "common": {
+    "loading": "Загрузка..."
+  },
+  "addRoom": {
+  "title": "Добавить номер",
+  "roomNumber": "Номер",
+  "roomNumberPlaceholder": "Номер комнаты",
+  "description": "Описание",
+  "descriptionPlaceholder": "Описание номера",
+  "roomsCount": "Количество комнат",
+  "roomsCountPlaceholder": "Введите количество комнат",
+  "uploadPhotos": "Загрузите фотографии (макс. 10)",
+  "maxPhotosAlert": "Вы можете загрузить не более 10 фотографий.",
+  "success": "Номер успешно добавлен!",
+  "error": "Ошибка при добавлении номера.",
+  "submit": "Добавить номер"
+},
+"common": {
+  "loading": "Загрузка..."
+}
 
 }
 

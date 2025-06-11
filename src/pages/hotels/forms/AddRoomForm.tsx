@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface RoomData {
   number: string;
@@ -10,6 +11,7 @@ interface RoomData {
 }
 
 const AddRoomForm: React.FC = () => {
+  const { t } = useTranslation();
   const [roomData, setRoomData] = useState<RoomData>({
     number: "",
     description: "",
@@ -17,11 +19,9 @@ const AddRoomForm: React.FC = () => {
     photos: [],
   });
 
-  const { id: hotelId } = useParams<Record<string, string | undefined>>(); // Исправлено
-
+  const { id: hotelId } = useParams<Record<string, string | undefined>>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
-
   const url = import.meta.env.VITE_URL;
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,7 +43,7 @@ const AddRoomForm: React.FC = () => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (files.length + roomData.photos.length > 10) {
-      alert("Вы можете загрузить не более 10 фотографий.");
+      alert(t("addRoom.maxPhotosAlert"));
       return;
     }
     setRoomData((prevData) => ({
@@ -69,13 +69,11 @@ const AddRoomForm: React.FC = () => {
       formData.append("number", roomData.number);
       formData.append("description", roomData.description);
       formData.append("roomsNumber", roomData.roomsNumber);
-
       roomData.photos.forEach((photo) => {
         formData.append("photos", photo);
       });
 
       const token = localStorage.getItem("access_token");
-
       const response = await axios.post(
         `${url}/api/rooms/${hotelId}`,
         formData,
@@ -88,98 +86,64 @@ const AddRoomForm: React.FC = () => {
       );
 
       console.log("Room added successfully:", response.data);
-      alert("Успех!");
+      alert(t("addRoom.success"));
       window.location.reload();
     } catch (error) {
       console.error("Error adding room:", error);
+      alert(t("addRoom.error"));
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px", backgroundColor: "#f9f9f9", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
-      <h2 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "24px" }}>Добавить номер</h2>
+      <h2 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "24px" }}>{t("addRoom.title")}</h2>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "16px" }}>
-          <label htmlFor="number" style={{ display: "block", fontSize: "14px", fontWeight: "500", color: "#333" }}>
-            Номер
-          </label>
+          <label htmlFor="number">{t("addRoom.roomNumber")}</label>
           <input
             type="text"
             id="number"
             name="number"
             value={roomData.number}
             onChange={handleInputChange}
-            style={{
-              marginTop: "8px",
-              width: "100%",
-              padding: "12px",
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-              fontSize: "16px",
-              outline: "none",
-              transition: "border-color 0.2s",
-            }}
-            placeholder="Номер"
+            placeholder={t("addRoom.roomNumberPlaceholder")}
             required
+            style={inputStyle}
           />
         </div>
 
         <div style={{ marginBottom: "16px" }}>
-          <label htmlFor="description" style={{ display: "block", fontSize: "14px", fontWeight: "500", color: "#333" }}>
-            Описание
-          </label>
+          <label htmlFor="description">{t("addRoom.description")}</label>
           <textarea
             id="description"
             name="description"
             value={roomData.description}
             onChange={handleInputChange}
-            style={{
-              marginTop: "8px",
-              width: "100%",
-              padding: "12px",
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-              fontSize: "16px",
-              outline: "none",
-              transition: "border-color 0.2s",
-              resize: "vertical",
-            }}
-            placeholder="Описание номера"
+            placeholder={t("addRoom.descriptionPlaceholder")}
             required
+            style={{ ...inputStyle, resize: "vertical" }}
           />
         </div>
 
         <div style={{ marginBottom: "16px" }}>
-          <label htmlFor="rooms" style={{ display: "block", fontSize: "14px", fontWeight: "500", color: "#333" }}>
-            Количество комнат
-          </label>
+          <label htmlFor="rooms">{t("addRoom.roomsCount")}</label>
           <input
             type="number"
             id="rooms"
             name="rooms"
             value={roomData.roomsNumber}
             onChange={handleNumberChange}
-            style={{
-              marginTop: "8px",
-              width: "100%",
-              padding: "12px",
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-              fontSize: "16px",
-              outline: "none",
-              transition: "border-color 0.2s",
-            }}
-            placeholder="Количество комнат"
+            placeholder={t("addRoom.roomsCountPlaceholder")}
             min={0}
             required
+            style={inputStyle}
           />
         </div>
 
         <div style={{ marginBottom: "16px" }}>
-          <label htmlFor="photos" style={{ display: "block", fontSize: "14px", fontWeight: "500", color: "#333" }}>
-            Загрузите фотографии отеля (макс. 10)
-          </label>
+          <label htmlFor="photos">{t("addRoom.uploadPhotos")}</label>
           <input
             type="file"
             id="photos"
@@ -187,23 +151,27 @@ const AddRoomForm: React.FC = () => {
             accept="image/*"
             multiple
             onChange={handleFileChange}
-            style={{
-              marginTop: "8px",
-              width: "100%",
-              padding: "8px",
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-            }}
+            style={inputStyle}
           />
 
           {roomData.photos.length > 0 && (
-            <div style={{ marginTop: "16px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: "12px" }}>
+            <div style={{
+              marginTop: "16px",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+              gap: "12px"
+            }}>
               {roomData.photos.map((file, index) => (
                 <div key={index} style={{ position: "relative" }}>
                   <img
                     src={URL.createObjectURL(file)}
                     alt={`preview-${index}`}
-                    style={{ width: "100%", height: "120px", objectFit: "cover", borderRadius: "8px" }}
+                    style={{
+                      width: "100%",
+                      height: "120px",
+                      objectFit: "cover",
+                      borderRadius: "8px"
+                    }}
                   />
                   <button
                     type="button"
@@ -235,12 +203,12 @@ const AddRoomForm: React.FC = () => {
           type="submit"
           onClick={handleSubmit}
           disabled={isLoading}
-          onMouseEnter={() => setIsHovered(true)}  // Добавляем событие на ховер
-          onMouseLeave={() => setIsHovered(false)} // Убираем эффект ховера
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           style={{
             width: "100%",
             padding: "14px",
-            backgroundColor: isLoading ? "#9e9e9e" : isHovered ? "#45a049" : "#4caf50", // Меняем цвет фона при ховере
+            backgroundColor: isLoading ? "#9e9e9e" : isHovered ? "#45a049" : "#4caf50",
             color: "white",
             border: "none",
             borderRadius: "6px",
@@ -249,11 +217,22 @@ const AddRoomForm: React.FC = () => {
             transition: "background-color 0.3s ease",
           }}
         >
-          {isLoading ? "Загрузка..." : "Добавить номер"}
+          {isLoading ? t("common.loading") : t("addRoom.submit")}
         </button>
       </form>
     </div>
   );
+};
+
+const inputStyle: React.CSSProperties = {
+  marginTop: "8px",
+  width: "100%",
+  padding: "12px",
+  border: "1px solid #ddd",
+  borderRadius: "6px",
+  fontSize: "16px",
+  outline: "none",
+  transition: "border-color 0.2s",
 };
 
 export default AddRoomForm;

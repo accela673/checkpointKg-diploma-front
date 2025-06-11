@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./HotelRoomsPage.scss";
 
 interface Room {
@@ -26,6 +27,7 @@ const HotelRoomsPage: React.FC = () => {
   const [hotel, setHotel] = useState<Hotel | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { t } = useTranslation();
   const url = import.meta.env.VITE_URL;
   const userRole = localStorage.getItem("role");
   const navigate = useNavigate();
@@ -46,14 +48,14 @@ const HotelRoomsPage: React.FC = () => {
           },
         }
       );
-      alert("Забронировано!");
-      setRooms(prev =>
+      alert(t("hotel.bookedSuccess"));
+      setRooms((prev) =>
         prev.map((room) =>
           room.id === roomId ? { ...room, isBooked: true } : room
         )
       );
     } catch (error) {
-      console.error("Ошибка при бронировании:", error);
+      console.error(t("hotel.bookError"), error);
     }
   };
 
@@ -73,14 +75,14 @@ const HotelRoomsPage: React.FC = () => {
           },
         }
       );
-      alert("Комната освобождена!");
-      setRooms(prev =>
+      alert(t("hotel.releasedSuccess"));
+      setRooms((prev) =>
         prev.map((room) =>
           room.id === roomId ? { ...room, isBooked: false } : room
         )
       );
     } catch (error) {
-      console.error("Ошибка при освобождении комнаты:", error);
+      console.error(t("hotel.releaseError"), error);
     }
   };
 
@@ -107,18 +109,18 @@ const HotelRoomsPage: React.FC = () => {
     if (hotelId) fetchHotelData();
   }, [hotelId]);
 
-  if (!hotel) return <div>Loading...</div>;
+  if (!hotel) return <div>{t("common.loading")}</div>;
 
   return (
     <div className="hotel-rooms-page">
-      <h1 className="hotel-title">{hotel.name} - Комнаты</h1>
+      <h1 className="hotel-title">{hotel.name} - {t("hotel.rooms")}</h1>
 
       <div className="rooms-list">
         {rooms.map((room) => (
           <div key={room.id} className="room-item">
-            <h2>Номер {room.number}</h2>
-            <p><strong>Описание:</strong> {room.description}</p>
-            <p><strong>Количество комнат:</strong> {room.roomsNumber}</p>
+            <h2>{t("hotel.rooms")} {room.number}</h2>
+            <p><strong>{t("hotel.description")}:</strong> {room.description}</p>
+            <p><strong>{t("hotel.roomsNumber")}:</strong> {room.roomsNumber}</p>
 
             <div className="room-images">
               {room.photos?.map((photo, index) => (
@@ -138,17 +140,17 @@ const HotelRoomsPage: React.FC = () => {
                 className="release-room-btn"
                 onClick={() => releaseRoom(room.id)}
               >
-                Освободить
+                {t("hotel.release")}
               </button>
             ) : !room.isBooked ? (
               <button
                 className="book-room-btn"
                 onClick={() => bookRoom(room.id)}
               >
-                Забронировать
+                {t("hotel.book")}
               </button>
             ) : (
-              <p>Этот номер забронирован</p>
+              <p>{t("hotel.booked")}</p>
             )}
           </div>
         ))}

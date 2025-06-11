@@ -177,7 +177,39 @@
     "passwordMismatch": "Сырсөздөр дал келген жок",
     "error": "Катталууда ката кетти",
     "successAlert": "Ийгиликтүү катталдыңыз! Email дарегиңизди ырастоо керек."
-  }
+  },
+  "hotel": {
+    "rooms": "Бөлмөлөр",
+    "description": "Сүрөттөмө",
+    "roomsNumber": "Бөлмө саны",
+    "book": "Брондоо",
+    "release": "Бошотуу",
+    "booked": "Бул бөлмө брондолгон",
+    "bookedSuccess": "Ийгиликтүү брондолду!",
+    "releasedSuccess": "Бөлмө бошотулду!",
+    "bookError": "Брондоо учурунда ката кетти",
+    "releaseError": "Бөлмөнү бошотууда ката кетти"
+  },
+  "common": {
+    "loading": "Жүктөлүүдө..."
+  },
+  "addRoom": {
+  "title": "Бөлмө кошуу",
+  "roomNumber": "Бөлмөнүн номери",
+  "roomNumberPlaceholder": "Бөлмөнүн номери",
+  "description": "Сүрөттөмө",
+  "descriptionPlaceholder": "Бөлмөнүн сүрөттөмөсү",
+  "roomsCount": "Бөлмө саны",
+  "roomsCountPlaceholder": "Бөлмөлөрдүн санын киргизиңиз",
+  "uploadPhotos": "Сүрөттөрдү жүктөңүз (эн көп 10)",
+  "maxPhotosAlert": "10 сүрөттөн ашык жүктөй албайсыз.",
+  "success": "Бөлмө ийгиликтүү кошулду!",
+  "error": "Бөлмөнү кошууда ката кетти.",
+  "submit": "Бөлмө кошуу"
+},
+"common": {
+  "loading": "Жүктөлүүдө..."
+}
 }
 
 
