@@ -3,21 +3,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 
 const ConfirmEmail: React.FC = () => {
-  const [email, setEmail] = useState(localStorage.getItem('email') || '');  // Получаем email из localStorage
+  const { t } = useTranslation();
+
+  const [email, setEmail] = useState(localStorage.getItem('email') || '');
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
-  const [timer, setTimer] = useState(60); // Таймер для кнопки отправки
+  const [timer, setTimer] = useState(60);
   const navigate = useNavigate();
-  const url = import.meta.env.VITE_URL
+  const url = import.meta.env.VITE_URL;
 
-  // Функция подтверждения email
   const handleConfirmEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -28,20 +29,19 @@ const ConfirmEmail: React.FC = () => {
       const response = await axios.post(`${url}/api/auth/confirmEmail`, { email, code });
       if (response.status >= 200 && response.status < 300) {
         setSuccess(true);
-        alert(`Аккаунт активирован успешно!`);
-        navigate('/login');  // Перенаправление на страницу входа
+        alert(t('confirmEmail.accountActivated'));
+        navigate('/login');
       }
     } catch (error) {
-      console.log(error)
-      setError('Ошибка при подтверждении email');
+      console.log(error);
+      setError(t('confirmEmail.confirmError'));
     } finally {
       setLoading(false);
     }
   };
 
-  // Функция для повторной отправки кода
   const handleResendCode = async () => {
-    if (timer > 0) return;  // Если таймер не 0, то не отправляем код
+    if (timer > 0) return;
 
     setResendLoading(true);
     setResendSuccess(false);
@@ -51,18 +51,17 @@ const ConfirmEmail: React.FC = () => {
       const response = await axios.patch(`${url}/api/auth/sendCodeAgain`, { email });
       if (response.status >= 200 && response.status < 300) {
         setResendSuccess(true);
-        alert(`Код отправлен заново на имейл ${email}`);
-        window.location.reload();  // Сброс таймера на 60 секунд после успешной отправки
+        alert(t('confirmEmail.codeResent', { email }));
+        window.location.reload();
       }
     } catch (error) {
-      console.log(error)
-      setError('Ошибка при повторной отправке кода');
+      console.log(error);
+      setError(t('confirmEmail.resendError'));
     } finally {
       setResendLoading(false);
     }
   };
 
-  // Таймер для кнопки
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
@@ -74,14 +73,14 @@ const ConfirmEmail: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto mt-8 p-4 bg-white shadow-md rounded">
-      <h2 className="text-2xl font-bold text-center mb-4">Подтверждение email</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">{t('confirmEmail.title')}</h2>
       {error && <p className="text-red-500 text-center">{error}</p>}
-      {success && <p className="text-green-500 text-center">Аккаунт успешно подтвержден!</p>}
-      {resendSuccess && <p className="text-green-500 text-center">Код отправлен заново!</p>}
+      {success && <p className="text-green-500 text-center">{t('confirmEmail.success')}</p>}
+      {resendSuccess && <p className="text-green-500 text-center">{t('confirmEmail.codeResentMessage')}</p>}
 
       <form onSubmit={handleConfirmEmail} className="flex flex-col space-y-4">
         <div>
-          <label htmlFor="email" className="block font-medium">Email</label>
+          <label htmlFor="email" className="block font-medium">{t('confirmEmail.emailLabel')}</label>
           <input
             id="email"
             type="email"
@@ -92,7 +91,7 @@ const ConfirmEmail: React.FC = () => {
           />
         </div>
         <div>
-          <label htmlFor="code" className="block font-medium">Код подтверждения</label>
+          <label htmlFor="code" className="block font-medium">{t('confirmEmail.codeLabel')}</label>
           <input
             id="code"
             type="text"
@@ -108,7 +107,7 @@ const ConfirmEmail: React.FC = () => {
           className="w-full bg-blue-500 text-white p-2 rounded transform transition duration-300 hover:scale-105 active:scale-95"
           disabled={loading}
         >
-          {loading ? 'Подтверждение...' : 'Подтвердить email'}
+          {loading ? t('confirmEmail.confirming') : t('confirmEmail.confirmButton')}
         </button>
       </form>
 
@@ -117,7 +116,11 @@ const ConfirmEmail: React.FC = () => {
         className="w-full bg-gray-500 text-white mt-4 p-2 rounded transform transition duration-300 hover:scale-105 active:scale-95"
         disabled={resendLoading || timer > 0}
       >
-        {resendLoading ? 'Отправка...' : timer > 0 ? `Отправить код снова (${timer}s)` : 'Отправить код заново'}
+        {resendLoading
+          ? t('confirmEmail.sending')
+          : timer > 0
+          ? t('confirmEmail.resendIn', { seconds: timer })
+          : t('confirmEmail.resendButton')}
       </button>
     </div>
   );

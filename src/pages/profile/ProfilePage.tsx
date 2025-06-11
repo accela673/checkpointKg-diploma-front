@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const ProfilePage = () => {
+  const { t } = useTranslation();
   const [hotels, setHotels] = useState<any[]>([]);
   const [rooms, setRooms] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -14,7 +16,7 @@ const ProfilePage = () => {
 
   const handleReleaseRoom = async (roomId: number) => {
     if (!accessToken) return;
-  
+
     try {
       await axios.put(`${url}/api/rooms/release/one/${roomId}`, null, {
         headers: {
@@ -22,14 +24,14 @@ const ProfilePage = () => {
         },
       });
 
-      alert('Вы освободили комнату');
+      alert(t('profilePage.releaseSuccess'));
       setRooms((prev) => prev.filter((room) => room.id !== roomId));
-
     } catch (error) {
       console.error('Ошибка при освобождении комнаты', error);
-      alert('Не удалось освободить комнату');
+      alert(t('profilePage.releaseError'));
     }
   };
+
   useEffect(() => {
     const userRole = localStorage.getItem('role');
     setRole(userRole);
@@ -56,7 +58,7 @@ const ProfilePage = () => {
           setRooms(response.data);
         }
       } catch (error) {
-        setError('Ошибка при получении данных');
+        setError(t('profilePage.errorLoading'));
         console.error(error);
       } finally {
         setLoading(false);
@@ -64,11 +66,11 @@ const ProfilePage = () => {
     };
 
     fetchData();
-  }, [url, accessToken]);
+  }, [url, accessToken, t]);
 
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h2 className="text-xl font-bold mb-4">Профиль</h2>
+      <h2 className="text-xl font-bold mb-4">{t('profilePage.title')}</h2>
 
       {role === 'LANDLORD' && (
         <div className="mt-6">
@@ -76,33 +78,34 @@ const ProfilePage = () => {
             to="/add-hotel"
             className="w-full py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 text-center block"
           >
-            Добавить новый отель
+            {t('profilePage.addHotel')}
           </Link>
         </div>
       )}
 
       <div className="mt-8">
-        {loading && <p>Загрузка...</p>}
+        {loading && <p>{t('profilePage.loading')}</p>}
         {error && <p className="text-red-500">{error}</p>}
 
         {role === 'LANDLORD' && (
           <>
-            <h2 className="text-xl font-bold mb-4">Мои гостиницы</h2>
+            <h2 className="text-xl font-bold mb-4">{t('profilePage.myHotelsTitle')}</h2>
             {hotels.length === 0 && !loading && !error ? (
-              <p>У вас нет добавленных отелей.</p>
+              <p>{t('profilePage.noHotels')}</p>
             ) : (
               <ul className="space-y-4">
                 {hotels.map((hotel) => (
                   <li key={hotel.id} className="p-4 border rounded-md">
                     <h3 className="text-lg font-bold">{hotel.name}</h3>
                     <p>{hotel.description}</p>
-                    <p>Адрес: {hotel.address}</p>
-                    <p>Телефон: {hotel.phoneNumber}</p>
-                    <Link
-                      to={`/hotels/${hotel.id}`}
-                      className="text-blue-500 hover:underline"
-                    >
-                      Подробнее
+                    <p>
+                      {t('profilePage.address')}: {hotel.address}
+                    </p>
+                    <p>
+                      {t('profilePage.phone')}: {hotel.phoneNumber}
+                    </p>
+                    <Link to={`/hotels/${hotel.id}`} className="text-blue-500 hover:underline">
+                      {t('profilePage.details')}
                     </Link>
                   </li>
                 ))}
@@ -113,9 +116,9 @@ const ProfilePage = () => {
 
         {role === 'CLIENT' && (
           <>
-            <h2 className="text-xl font-bold mb-4">Мои бронирования</h2>
+            <h2 className="text-xl font-bold mb-4">{t('profilePage.myBookingsTitle')}</h2>
             {rooms.length === 0 && !loading && !error ? (
-              <p>У вас нет забронированных комнат.</p>
+              <p>{t('profilePage.noBookings')}</p>
             ) : (
               <ul className="space-y-4">
                 {rooms.map((room) => (
@@ -132,13 +135,22 @@ const ProfilePage = () => {
                         className="w-full h-48 object-cover rounded-md mb-2"
                       />
                     )}
-                    <h3 className="text-lg font-semibold mb-1">Комната №{room.number}</h3>
-                    <p className="text-gray-700 mb-1">Описание: {room.description}</p>
-                    <p className="text-gray-700 mb-1">Количество комнат: {room.roomsNumber}</p>
-                    <p className="text-gray-700 mb-1">Гостиница: {room.hotel.name}</p>
-                    <p className="text-gray-700">Адрес: {room.hotel.address}</p>
+                    <h3 className="text-lg font-semibold mb-1">
+                      {t('profilePage.roomNumber', { number: room.number })}
+                    </h3>
+                    <p className="text-gray-700 mb-1">
+                      {t('profilePage.description')}: {room.description}
+                    </p>
+                    <p className="text-gray-700 mb-1">
+                      {t('profilePage.roomsCount')}: {room.roomsNumber}
+                    </p>
+                    <p className="text-gray-700 mb-1">
+                      {t('profilePage.hotel')}: {room.hotel.name}
+                    </p>
+                    <p className="text-gray-700">
+                      {t('profilePage.address')}: {room.hotel.address}
+                    </p>
 
-                    {/* Кнопка "Освободить" снизу справа */}
                     <div className="mt-4 flex justify-end">
                       <button
                         onClick={(e) => {
@@ -147,7 +159,7 @@ const ProfilePage = () => {
                         }}
                         className="bg-red-500 hover:bg-red-600 hover:opacity-90 text-white text-sm px-4 py-2 rounded-md transition duration-200 shadow-md"
                       >
-                        Освободить
+                        {t('profilePage.releaseButton')}
                       </button>
                     </div>
                   </li>

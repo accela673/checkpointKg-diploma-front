@@ -1,17 +1,16 @@
-// src/pages/Login.tsx
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const url = import.meta.env.VITE_URL
-
+  const url = import.meta.env.VITE_URL;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,13 +24,13 @@ const Login: React.FC = () => {
         localStorage.setItem('id', response.data.id); 
         const currentTime = Date.now();
         localStorage.setItem("loginTime", currentTime.toString());
-        alert('Вы успешно вошли в систему!');
+        alert(t('login.successAlert'));
         navigate('/profile');
-        window.location.reload()
+        window.location.reload();
       }
     } catch (error) {
-      console.log(error)
-      setError('Ошибка при входе');
+      console.log(error);
+      setError(t('login.error'));
     } finally {
       setLoading(false);
     }
@@ -39,11 +38,11 @@ const Login: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto mt-8 p-4 bg-white shadow-md rounded">
-      <h2 className="text-2xl font-bold text-center mb-4">Вход в аккаунт</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">{t('login.title')}</h2>
       {error && <p className="text-red-500 text-center">{error}</p>}
       <form onSubmit={handleLogin} className="flex flex-col space-y-4">
         <div>
-          <label htmlFor="email" className="block font-medium">Email</label>
+          <label htmlFor="email" className="block font-medium">{t('login.emailLabel')}</label>
           <input
             id="email"
             type="email"
@@ -54,7 +53,7 @@ const Login: React.FC = () => {
           />
         </div>
         <div>
-          <label htmlFor="password" className="block font-medium">Пароль</label>
+          <label htmlFor="password" className="block font-medium">{t('login.passwordLabel')}</label>
           <input
             id="password"
             type="password"
@@ -69,7 +68,7 @@ const Login: React.FC = () => {
           className="w-full bg-blue-500 text-white p-2 rounded transform transition duration-300 hover:scale-105 active:scale-95"
           disabled={loading}
         >
-          {loading ? 'Вход...' : 'Войти'}
+          {loading ? t('login.loading') : t('login.submit')}
         </button>
       </form>
     </div>

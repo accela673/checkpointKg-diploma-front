@@ -103,7 +103,7 @@
   }
 
   // Скрываем весь navbar на больших экранах
-  @media (min-width: 769px) {
+  @media (min-width: 1016px) {
     display: none;
   }
 }
@@ -116,5 +116,23 @@
 
   p {
     margin: 0.25rem 0;
+  }
+}
+
+.lang-select-mobile {
+  width: 100%;
+  max-width: 200px;    /* ограничим ширину */
+  padding: 0.3rem 0.5rem;
+  font-size: 0.9rem;
+  border-radius: 0.25rem;
+  border: none;
+  color: #3b82f6;
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+
+  option {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.5rem;
   }
 }

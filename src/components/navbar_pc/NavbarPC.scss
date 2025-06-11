@@ -69,7 +69,27 @@
   }
 
   // Прячем на маленьких экранах
-  @media (max-width: 768px) {
+  @media (max-width: 1015px) {
     display: none;
+  }
+}
+.lang-select {
+  color: black;
+  padding: 3px 8px;     // меньше отступов сверху/снизу и по бокам
+  font-size: 0.85rem;   // уменьшенный размер шрифта
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  transition: color 0.3s ease;
+  width: auto;          // ширина по содержимому, не слишком большая
+  min-width: 80px;      // минимальная ширина для аккуратности
+
+  &:hover {
+    color: #007bff;
+  }
+
+  option {
+    color: black;
   }
 }

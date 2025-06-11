@@ -1,53 +1,57 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./SearchPage.scss";
 
 const SearchPage = () => {
+  const { t } = useTranslation();
+
   const [hotels, setHotels] = useState<any[]>([]);
   const [currentImages, setCurrentImages] = useState<{ [key: number]: number }>({});
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8; // Количество элементов на странице
+  const itemsPerPage = 8;
   const navigate = useNavigate();
   const url = import.meta.env.VITE_URL;
 
   const typeLabels: Record<string, string> = {
-  HOTEL: 'Отель',
-  HOSTEL: 'Хостел',
-  APARTMENT: 'Квартира',
-  HOUSE: 'Дом',
-  COTTAGE: 'Коттедж',
-  YURT: 'Юрта',
-  ANOTHER: 'Другое',
+    HOTEL: t("searchPage.types.hotel"),
+    HOSTEL: t("searchPage.types.hostel"),
+    APARTMENT: t("searchPage.types.apartment"),
+    HOUSE: t("searchPage.types.house"),
+    COTTAGE: t("searchPage.types.cottage"),
+    YURT: t("searchPage.types.yurt"),
+    ANOTHER: t("searchPage.types.another"),
   };
 
   const regions = [
-    '',
-    'Бишкек',
-    'Ош',
-    'Чуйская область',
-    'Ошская область',
-    'Иссык-Кульская область',
-    'Нарынская область',
-    'Джалал-Абадская область',
-    'Баткенская область',
-    'Таласская область',
+    "",
+    t("regions.bishkek"),
+    t("regions.osh"),
+    t("regions.chu"),
+    t("regions.oshRegion"),
+    t("regions.issykKul"),
+    t("regions.naryn"),
+    t("regions.djalalAbad"),
+    t("regions.batken"),
+    t("regions.talas"),
   ];
 
-const [regionFilter, setRegionFilter] = useState<string>(""); // пустая — значит "все регионы"
-const [typeFilter, setTypeFilter] = useState<string>("");
+  const [regionFilter, setRegionFilter] = useState<string>("");
+  const [typeFilter, setTypeFilter] = useState<string>("");
 
-const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  setRegionFilter(e.target.value);
-  setCurrentPage(1); // сбросить на первую страницу при фильтрации
-};
+  const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRegionFilter(e.target.value);
+    setCurrentPage(1);
+  };
 
-const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  setTypeFilter(e.target.value);
-  setCurrentPage(1);
-};
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTypeFilter(e.target.value);
+    setCurrentPage(1);
+  };
 
-const types = ['', ...Object.keys(typeLabels)];
+  const types = ["", ...Object.keys(typeLabels)];
+
   useEffect(() => {
     const fetchHotels = async () => {
       try {
@@ -59,7 +63,7 @@ const types = ['', ...Object.keys(typeLabels)];
     };
 
     fetchHotels();
-  }, []);
+  }, [url]);
 
   const handleCardClick = (id: number) => {
     navigate(`/hotels/${id}`);
@@ -74,37 +78,35 @@ const types = ['', ...Object.keys(typeLabels)];
       if (newIndex >= imagesLength) newIndex = 0;
       if (newIndex < 0) newIndex = imagesLength - 1;
 
-      return {
-        ...prev,
-        [hotelId]: newIndex,
-      };
+      return { ...prev, [hotelId]: newIndex };
     });
   };
 
-  // Логика пагинации
+  // Фильтрация и пагинация
   const indexOfLastHotel = currentPage * itemsPerPage;
   const indexOfFirstHotel = indexOfLastHotel - itemsPerPage;
-  const filteredHotels = hotels.filter(hotel => {
-  const matchesRegion = regionFilter ? hotel.region === regionFilter : true;
-  const matchesType = typeFilter ? hotel.type === typeFilter : true;
-  return matchesRegion && matchesType;
-});
 
-const currentHotels = filteredHotels.slice(indexOfFirstHotel, indexOfLastHotel);
+  const filteredHotels = hotels.filter((hotel) => {
+    // Чтобы фильтрация по региону и типу работала корректно с переводами,
+    // сравним их значения с исходными ключами:
+    const regionKey = regions.findIndex((r) => r === hotel.region);
+    const selectedRegionKey = regions.findIndex((r) => r === regionFilter);
+    const matchesRegion = regionFilter ? regionFilter === hotel.region : true;
 
+    const matchesType = typeFilter ? hotel.type === typeFilter : true;
+    return matchesRegion && matchesType;
+  });
+
+  const currentHotels = filteredHotels.slice(indexOfFirstHotel, indexOfLastHotel);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <div className="search-page">
-      <h1 className="title">Поиск жилья</h1>
+      <h1 className="title">{t("searchPage.title")}</h1>
       <div className="filters">
-        <select
-          value={regionFilter}
-          onChange={handleRegionChange}
-          className="filter-select"
-        >
-          <option value="">Все регионы</option>
+        <select value={regionFilter} onChange={handleRegionChange} className="filter-select">
+          <option value="">{t("searchPage.allRegions")}</option>
           {regions
             .filter((r) => r !== "")
             .map((region) => (
@@ -114,14 +116,10 @@ const currentHotels = filteredHotels.slice(indexOfFirstHotel, indexOfLastHotel);
             ))}
         </select>
 
-        <select
-          value={typeFilter}
-          onChange={handleTypeChange}
-          className="filter-select"
-        >
-          <option value="">Все типы</option>
+        <select value={typeFilter} onChange={handleTypeChange} className="filter-select">
+          <option value="">{t("searchPage.allTypes")}</option>
           {types
-            .filter((t) => t !== "")
+            .filter((type) => type !== "")
             .map((type) => (
               <option key={type} value={type}>
                 {typeLabels[type]}
@@ -129,62 +127,52 @@ const currentHotels = filteredHotels.slice(indexOfFirstHotel, indexOfLastHotel);
             ))}
         </select>
       </div>
+
       <div className="card-list">
         {currentHotels.map((hotel) => (
-          <div
-            key={hotel.id}
-            className="hotel-card"
-            onClick={() => handleCardClick(hotel.id)}
-          >
+          <div key={hotel.id} className="hotel-card" onClick={() => handleCardClick(hotel.id)}>
             {hotel.photos?.length > 0 && (
               <div className="image-container" onClick={(e) => e.stopPropagation()}>
                 <img
-                  src={
-                    hotel.photos[currentImages[hotel.id] || 0] ||
-                    "https://via.placeholder.com/300"
-                  }
-                  alt="Hotel"
+                  src={hotel.photos[currentImages[hotel.id] || 0] || "https://via.placeholder.com/300"}
+                  alt={hotel.name}
                   className="hotel-image"
                   crossOrigin="anonymous"
                 />
                 {hotel.photos.length > 1 && (
                   <>
-                    <button
-                      className="arrow left"
-                      onClick={() => handleImageSwitch(hotel.id, "prev")}
-                    ></button>
-                    <button
-                      className="arrow right"
-                      onClick={() => handleImageSwitch(hotel.id, "next")}
-                    ></button>
+                    <button className="arrow left" onClick={() => handleImageSwitch(hotel.id, "prev")} />
+                    <button className="arrow right" onClick={() => handleImageSwitch(hotel.id, "next")} />
                   </>
                 )}
               </div>
             )}
             <div className="card-content">
               <h2>{hotel.name}</h2>
-              <p><strong>Номеров:</strong> {hotel.rooms.length}</p>
-              <p><strong>Описание:</strong> {hotel.description}</p>
-              <p><strong>Адрес:</strong> {hotel.address}</p>
+              <p>
+                <strong>{t("searchPage.rooms")}: </strong> {hotel.rooms.length}
+              </p>
+              <p>
+                <strong>{t("searchPage.description")}: </strong> {hotel.description}
+              </p>
+              <p>
+                <strong>{t("searchPage.address")}: </strong> {hotel.address}
+              </p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Пагинация */}
       <div className="pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Назад
+        <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+          {t("searchPage.prev")}
         </button>
         <span>{currentPage}</span>
         <button
           onClick={() => paginate(currentPage + 1)}
-          disabled={indexOfLastHotel >= hotels.length}
+          disabled={indexOfLastHotel >= filteredHotels.length}
         >
-          Вперёд
+          {t("searchPage.next")}
         </button>
       </div>
     </div>

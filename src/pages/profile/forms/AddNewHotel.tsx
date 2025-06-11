@@ -1,95 +1,95 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const AddHotelForm = () => {
-const [hotelData, setHotelData] = useState({
-  type: '', 
-  name: '',
-  description: '',
-  address: '',
-  phoneNumber: '',
-  twoGisURL: '',
-  googleMapsURL: '',
-  telegram: '',
-  region: '',
-  photos: [] as File[],
-});
+  const { t } = useTranslation();
+
+  const [hotelData, setHotelData] = useState({
+    type: '',
+    name: '',
+    description: '',
+    address: '',
+    phoneNumber: '',
+    twoGisURL: '',
+    googleMapsURL: '',
+    telegram: '',
+    region: '',
+    photos: [] as File[],
+  });
 
   const url = import.meta.env.VITE_URL;
-
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setHotelData((prevData) => ({
-      ...prevData,
+    setHotelData(prev => ({
+      ...prev,
       [name]: value,
     }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = e.target.files ? Array.from(e.target.files) : [];
-    setHotelData((prevData) => {
-      const combinedFiles = [...prevData.photos, ...newFiles];
+    setHotelData(prev => {
+      const combinedFiles = [...prev.photos, ...newFiles];
       return {
-        ...prevData,
-        photos: combinedFiles.slice(0, 10), // Ограничим до 10 файлов
+        ...prev,
+        photos: combinedFiles.slice(0, 10),
       };
     });
   };
 
   const handleRemoveFile = (index: number) => {
-    setHotelData((prevData) => ({
-      ...prevData,
-      photos: prevData.photos.filter((_, i) => i !== index),
+    setHotelData(prev => ({
+      ...prev,
+      photos: prev.photos.filter((_, i) => i !== index),
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
+    if (loading) return;
+    setLoading(true);
 
-  if (loading) return; // предотвращаем повторную отправку
+    const formData = new FormData();
+    formData.append('name', hotelData.name);
+    formData.append('description', hotelData.description);
+    formData.append('address', hotelData.address);
+    formData.append('phoneNumber', hotelData.phoneNumber);
+    formData.append('twoGisURL', hotelData.twoGisURL || '');
+    formData.append('googleMapsURL', hotelData.googleMapsURL || '');
+    formData.append('telegram', hotelData.telegram || '');
+    formData.append('region', hotelData.region || '');
 
-  setLoading(true);
-
-  const formData = new FormData();
-  formData.append('name', hotelData.name);
-  formData.append('description', hotelData.description);
-  formData.append('address', hotelData.address);
-  formData.append('phoneNumber', hotelData.phoneNumber);
-  formData.append('twoGisURL', hotelData.twoGisURL || '');
-  formData.append('googleMapsURL', hotelData.googleMapsURL || '');
-  formData.append('telegram', hotelData.telegram || '');
-  formData.append('region', hotelData.region || '');
-
-  hotelData.photos.forEach((file) => {
-    formData.append('photos', file);
-  });
-
-  try {
-    const response = await axios.post(`${url}/api/hotels/${hotelData.type}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
+    hotelData.photos.forEach(file => {
+      formData.append('photos', file);
     });
-    console.log('Hotel added successfully:', response.data);
-    alert('Добавлено!');
-    window.location.reload();
-  } catch (error) {
-    console.error('Error adding hotel:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+
+    try {
+      const response = await axios.post(`${url}/api/hotels/${hotelData.type}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      });
+      alert(t('addHotel.success'));
+      window.location.reload();
+    } catch (error) {
+      console.error('Error adding hotel:', error);
+      alert(t('addHotel.error'));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-lg mx-auto p-4">
-      <h2 className="text-xl font-bold mb-4">Добавить новый отель</h2>
+      <h2 className="text-xl font-bold mb-4">{t('addHotel.title')}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-            Тип жилья
+            {t('addHotel.typeLabel')}
           </label>
           <select
             id="type"
@@ -99,19 +99,20 @@ const [hotelData, setHotelData] = useState({
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
           >
-            <option value="">Выберите тип жилья</option>
-            <option value="HOTEL">Отель</option>
-            <option value="HOSTEL">Хостел</option>
-            <option value="APARTMENT">Квартира</option>
-            <option value="HOUSE">Дом</option>
-            <option value="COTTAGE">Коттедж</option>
-            <option value="YURT">Юрта</option>
-            <option value="ANOTHER">Другое</option>
+            <option value="">{t('addHotel.typePlaceholder')}</option>
+            <option value="HOTEL">{t('addHotel.types.hotel')}</option>
+            <option value="HOSTEL">{t('addHotel.types.hostel')}</option>
+            <option value="APARTMENT">{t('addHotel.types.apartment')}</option>
+            <option value="HOUSE">{t('addHotel.types.house')}</option>
+            <option value="COTTAGE">{t('addHotel.types.cottage')}</option>
+            <option value="YURT">{t('addHotel.types.yurt')}</option>
+            <option value="ANOTHER">{t('addHotel.types.another')}</option>
           </select>
         </div>
+
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-            Название
+            {t('addHotel.nameLabel')}
           </label>
           <input
             type="text"
@@ -120,14 +121,14 @@ const [hotelData, setHotelData] = useState({
             value={hotelData.name}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Название"
+            placeholder={t('addHotel.namePlaceholder')}
             required
           />
         </div>
 
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-            Описание
+            {t('addHotel.descriptionLabel')}
           </label>
           <textarea
             id="description"
@@ -135,38 +136,39 @@ const [hotelData, setHotelData] = useState({
             value={hotelData.description}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Описание отеля"
+            placeholder={t('addHotel.descriptionPlaceholder')}
             required
           />
         </div>
+
         <div>
-        <label htmlFor="region" className="block text-sm font-medium text-gray-700">
-          Регион
-        </label>
-        <select
-          id="region"
-          name="region"
-          value={hotelData.region}
-          onChange={handleChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          required
-        >
-          <option value="">Выберите регион</option>
-          <option value="Бишкек">г. Бишкек</option>
-          <option value="Ош">г. Ош</option>
-          <option value="Чуйская область">Чуйская область</option>
-          <option value="Ошская область">Ошская область</option>
-          <option value="Иссык-Кульская область">Иссык-Кульская область</option>
-          <option value="Нарынская область">Нарынская область</option>
-          <option value="Джалал-Абадская область">Джалал-Абадская область</option>
-          <option value="Баткенская область">Баткенская область</option>
-          <option value="Таласская область">Таласская область</option>
-        </select>
-      </div>
+          <label htmlFor="region" className="block text-sm font-medium text-gray-700">
+            {t('addHotel.regionLabel')}
+          </label>
+          <select
+            id="region"
+            name="region"
+            value={hotelData.region}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            required
+          >
+            <option value="">{t('addHotel.regionPlaceholder')}</option>
+            <option value="Бишкек">{t('regions.bishkek')}</option>
+            <option value="Ош">{t('regions.osh')}</option>
+            <option value="Чуйская область">{t('regions.chui')}</option>
+            <option value="Ошская область">{t('regions.oshRegion')}</option>
+            <option value="Иссык-Кульская область">{t('regions.issykKul')}</option>
+            <option value="Нарынская область">{t('regions.naryn')}</option>
+            <option value="Джалал-Абадская область">{t('regions.djalalAbad')}</option>
+            <option value="Баткенская область">{t('regions.batken')}</option>
+            <option value="Таласская область">{t('regions.talas')}</option>
+          </select>
+        </div>
 
         <div>
           <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-            Адрес
+            {t('addHotel.addressLabel')}
           </label>
           <input
             type="text"
@@ -175,14 +177,14 @@ const [hotelData, setHotelData] = useState({
             value={hotelData.address}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Адрес отеля"
+            placeholder={t('addHotel.addressPlaceholder')}
             required
           />
         </div>
 
         <div>
           <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-            Телефон
+            {t('addHotel.phoneLabel')}
           </label>
           <input
             type="text"
@@ -191,14 +193,14 @@ const [hotelData, setHotelData] = useState({
             value={hotelData.phoneNumber}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Телефон"
+            placeholder={t('addHotel.phonePlaceholder')}
             required
           />
         </div>
 
         <div>
           <label htmlFor="twoGisURL" className="block text-sm font-medium text-gray-700">
-            Ссылка на 2GIS (опционально)
+            {t('addHotel.twoGisLabel')}
           </label>
           <input
             type="text"
@@ -207,13 +209,13 @@ const [hotelData, setHotelData] = useState({
             value={hotelData.twoGisURL}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Ссылка на 2GIS"
+            placeholder={t('addHotel.twoGisPlaceholder')}
           />
         </div>
 
         <div>
           <label htmlFor="googleMapsURL" className="block text-sm font-medium text-gray-700">
-            Ссылка на Google Maps (опционально)
+            {t('addHotel.googleMapsLabel')}
           </label>
           <input
             type="text"
@@ -222,13 +224,13 @@ const [hotelData, setHotelData] = useState({
             value={hotelData.googleMapsURL}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Ссылка на Google Maps"
+            placeholder={t('addHotel.googleMapsPlaceholder')}
           />
         </div>
 
         <div>
           <label htmlFor="telegram" className="block text-sm font-medium text-gray-700">
-            Telegram (опционально)
+            {t('addHotel.telegramLabel')}
           </label>
           <input
             type="text"
@@ -237,13 +239,13 @@ const [hotelData, setHotelData] = useState({
             value={hotelData.telegram}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Ссылка на Telegram"
+            placeholder={t('addHotel.telegramPlaceholder')}
           />
         </div>
 
         <div>
           <label htmlFor="photos" className="block text-sm font-medium text-gray-700">
-            Загрузите фотографии отеля (макс. 10)
+            {t('addHotel.photosLabel')}
           </label>
           <input
             type="file"
@@ -286,9 +288,8 @@ const [hotelData, setHotelData] = useState({
               : 'bg-green-500 text-white hover:bg-green-600'
           }`}
         >
-          {loading ? 'Добавление...' : 'Добавить отель'}
+          {loading ? t('addHotel.loading') : t('addHotel.submit')}
         </button>
-
       </form>
     </div>
   );
