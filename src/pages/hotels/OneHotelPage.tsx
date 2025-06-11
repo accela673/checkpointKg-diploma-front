@@ -12,6 +12,8 @@ type Landlord = {
 type Hotel = {
   id: number;
   name: string;
+  type: string; 
+  region: string;
   description: string;
   address: string;
   phoneNumber: string;
@@ -19,7 +21,7 @@ type Hotel = {
   twoGisURL: string;
   googleMapsURL: string;
   photos: string[];
-  rooms: any[]; // Можно уточнить типы, если известна структура
+  rooms: any[];
   availableRoomsCount: number;
   landlord: Landlord;
 };
@@ -47,10 +49,18 @@ const OneHotelPage: React.FC = () => {
   const handleImageClick = (image: string) => {
     setModalImage(image);
   };
-
-  const closeModal = () => {
-    setModalImage(null);
-  };
+  const typeLabels: Record<string, string> = {
+  HOTEL: 'Отель',
+  HOSTEL: 'Хостел',
+  APARTMENT: 'Квартира',
+  HOUSE: 'Дом',
+  COTTAGE: 'Коттедж',
+  YURT: 'Юрта',
+  ANOTHER: 'Другое',
+};
+const getTypeLabel = (type: string): string => {
+  return typeLabels[type] || type;
+};
 
   if (!hotel) return <div>Loading...</div>;
 
@@ -60,7 +70,7 @@ const OneHotelPage: React.FC = () => {
 
       <Link to={`/hotel-rooms/${hotel.id}`}>
         <button className="view-rooms-btn">
-          Посмотреть свободные номера
+          Посмотреть свободные комнаты
         </button>
       </Link>
 
@@ -74,6 +84,8 @@ const OneHotelPage: React.FC = () => {
 
       <div className="hotel-info">
         <div className="hotel-details">
+          <p><strong>Тип жилья:</strong> {getTypeLabel(hotel.type)}</p>
+          <p><strong>Регион или город:</strong> {hotel.region}</p>          
           <p><strong>Всего комнат:</strong> {hotel.rooms.length}</p>
           <p><strong>Свободных комнат:</strong> {hotel.availableRoomsCount}</p>
           <p><strong>Описание:</strong> {hotel.description}</p>

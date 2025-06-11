@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const AddHotelForm = () => {
-  const [hotelData, setHotelData] = useState({
-    name: '',
-    description: '',
-    address: '',
-    phoneNumber: '',
-    twoGisURL: '',
-    googleMapsURL: '',
-    telegram: '',
-    photos: [] as File[],
-  });
+const [hotelData, setHotelData] = useState({
+  type: '', 
+  name: '',
+  description: '',
+  address: '',
+  phoneNumber: '',
+  twoGisURL: '',
+  googleMapsURL: '',
+  telegram: '',
+  region: '',
+  photos: [] as File[],
+});
+
   const url = import.meta.env.VITE_URL;
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -41,43 +46,72 @@ const AddHotelForm = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('name', hotelData.name);
-    formData.append('description', hotelData.description);
-    formData.append('address', hotelData.address);
-    formData.append('phoneNumber', hotelData.phoneNumber);
-    formData.append('twoGisURL', hotelData.twoGisURL || '');
-    formData.append('googleMapsURL', hotelData.googleMapsURL || '');
-    formData.append('telegram', hotelData.telegram || '');
+  if (loading) return; // предотвращаем повторную отправку
 
-    hotelData.photos.forEach((file) => {
-      formData.append('photos', file); // Добавляем файлы
+  setLoading(true);
+
+  const formData = new FormData();
+  formData.append('name', hotelData.name);
+  formData.append('description', hotelData.description);
+  formData.append('address', hotelData.address);
+  formData.append('phoneNumber', hotelData.phoneNumber);
+  formData.append('twoGisURL', hotelData.twoGisURL || '');
+  formData.append('googleMapsURL', hotelData.googleMapsURL || '');
+  formData.append('telegram', hotelData.telegram || '');
+  formData.append('region', hotelData.region || '');
+
+  hotelData.photos.forEach((file) => {
+    formData.append('photos', file);
+  });
+
+  try {
+    const response = await axios.post(`${url}/api/hotels/${hotelData.type}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
     });
-
-    try {
-      const response = await axios.post(`${url}/api/hotels`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      });
-      console.log('Hotel added successfully:', response.data);
-      alert('Добавлено!');
-      window.location.reload();
-    } catch (error) {
-      console.error('Error adding hotel:', error);
-    }
-  };
+    console.log('Hotel added successfully:', response.data);
+    alert('Добавлено!');
+    window.location.reload();
+  } catch (error) {
+    console.error('Error adding hotel:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="max-w-lg mx-auto p-4">
       <h2 className="text-xl font-bold mb-4">Добавить новый отель</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
+          <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+            Тип жилья
+          </label>
+          <select
+            id="type"
+            name="type"
+            value={hotelData.type}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            required
+          >
+            <option value="">Выберите тип жилья</option>
+            <option value="HOTEL">Отель</option>
+            <option value="HOSTEL">Хостел</option>
+            <option value="APARTMENT">Квартира</option>
+            <option value="HOUSE">Дом</option>
+            <option value="COTTAGE">Коттедж</option>
+            <option value="YURT">Юрта</option>
+            <option value="ANOTHER">Другое</option>
+          </select>
+        </div>
+        <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-            Название отеля
+            Название
           </label>
           <input
             type="text"
@@ -86,7 +120,7 @@ const AddHotelForm = () => {
             value={hotelData.name}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Название отеля"
+            placeholder="Название"
             required
           />
         </div>
@@ -105,6 +139,30 @@ const AddHotelForm = () => {
             required
           />
         </div>
+        <div>
+        <label htmlFor="region" className="block text-sm font-medium text-gray-700">
+          Регион
+        </label>
+        <select
+          id="region"
+          name="region"
+          value={hotelData.region}
+          onChange={handleChange}
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          required
+        >
+          <option value="">Выберите регион</option>
+          <option value="Бишкек">г. Бишкек</option>
+          <option value="Ош">г. Ош</option>
+          <option value="Чуйская область">Чуйская область</option>
+          <option value="Ошская область">Ошская область</option>
+          <option value="Иссык-Кульская область">Иссык-Кульская область</option>
+          <option value="Нарынская область">Нарынская область</option>
+          <option value="Джалал-Абадская область">Джалал-Абадская область</option>
+          <option value="Баткенская область">Баткенская область</option>
+          <option value="Таласская область">Таласская область</option>
+        </select>
+      </div>
 
         <div>
           <label htmlFor="address" className="block text-sm font-medium text-gray-700">
@@ -221,10 +279,16 @@ const AddHotelForm = () => {
 
         <button
           type="submit"
-          className="w-full py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 text-center block"
+          disabled={loading}
+          className={`w-full py-2 font-semibold rounded-md text-center block ${
+            loading
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-green-500 text-white hover:bg-green-600'
+          }`}
         >
-          Добавить отель
+          {loading ? 'Добавление...' : 'Добавить отель'}
         </button>
+
       </form>
     </div>
   );

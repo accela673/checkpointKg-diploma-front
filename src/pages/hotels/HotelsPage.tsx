@@ -11,6 +11,43 @@ const SearchPage = () => {
   const navigate = useNavigate();
   const url = import.meta.env.VITE_URL;
 
+  const typeLabels: Record<string, string> = {
+  HOTEL: 'Отель',
+  HOSTEL: 'Хостел',
+  APARTMENT: 'Квартира',
+  HOUSE: 'Дом',
+  COTTAGE: 'Коттедж',
+  YURT: 'Юрта',
+  ANOTHER: 'Другое',
+  };
+
+  const regions = [
+    '',
+    'Бишкек',
+    'Ош',
+    'Чуйская область',
+    'Ошская область',
+    'Иссык-Кульская область',
+    'Нарынская область',
+    'Джалал-Абадская область',
+    'Баткенская область',
+    'Таласская область',
+  ];
+
+const [regionFilter, setRegionFilter] = useState<string>(""); // пустая — значит "все регионы"
+const [typeFilter, setTypeFilter] = useState<string>("");
+
+const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  setRegionFilter(e.target.value);
+  setCurrentPage(1); // сбросить на первую страницу при фильтрации
+};
+
+const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  setTypeFilter(e.target.value);
+  setCurrentPage(1);
+};
+
+const types = ['', ...Object.keys(typeLabels)];
   useEffect(() => {
     const fetchHotels = async () => {
       try {
@@ -47,13 +84,51 @@ const SearchPage = () => {
   // Логика пагинации
   const indexOfLastHotel = currentPage * itemsPerPage;
   const indexOfFirstHotel = indexOfLastHotel - itemsPerPage;
-  const currentHotels = hotels.slice(indexOfFirstHotel, indexOfLastHotel);
+  const filteredHotels = hotels.filter(hotel => {
+  const matchesRegion = regionFilter ? hotel.region === regionFilter : true;
+  const matchesType = typeFilter ? hotel.type === typeFilter : true;
+  return matchesRegion && matchesType;
+});
+
+const currentHotels = filteredHotels.slice(indexOfFirstHotel, indexOfLastHotel);
+
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <div className="search-page">
       <h1 className="title">Поиск жилья</h1>
+      <div className="filters">
+        <select
+          value={regionFilter}
+          onChange={handleRegionChange}
+          className="filter-select"
+        >
+          <option value="">Все регионы</option>
+          {regions
+            .filter((r) => r !== "")
+            .map((region) => (
+              <option key={region} value={region}>
+                {region}
+              </option>
+            ))}
+        </select>
+
+        <select
+          value={typeFilter}
+          onChange={handleTypeChange}
+          className="filter-select"
+        >
+          <option value="">Все типы</option>
+          {types
+            .filter((t) => t !== "")
+            .map((type) => (
+              <option key={type} value={type}>
+                {typeLabels[type]}
+              </option>
+            ))}
+        </select>
+      </div>
       <div className="card-list">
         {currentHotels.map((hotel) => (
           <div
