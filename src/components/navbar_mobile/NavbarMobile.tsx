@@ -54,7 +54,6 @@ const NavbarMobile = () => {
         <Link to="/" onClick={closeMenu}>Главная</Link>
         <Link to="/search" onClick={closeMenu}>Поиск жилья</Link>
         <Link to="/about" onClick={closeMenu}>О нас</Link>
-        <Link to="/contact" onClick={closeMenu}>Контакты</Link>
 
         {/* Добавляем проверки на роль */}
         {role === "ADMIN" && <Link to="/admin" onClick={closeMenu}>Админ</Link>}
@@ -79,6 +78,11 @@ const NavbarMobile = () => {
               Выход
             </button>
           )}
+        </div>
+        <div className="mobile-footer">
+          <p>Контакты:</p>
+          <p>Тел: +996 704 022 832</p>
+         <p>Email: localhokage81@gmail.com</p>
         </div>
       </div>
     </div>

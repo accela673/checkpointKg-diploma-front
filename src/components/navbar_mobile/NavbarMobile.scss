@@ -107,3 +107,14 @@
     display: none;
   }
 }
+.mobile-footer {
+  margin-top: auto;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+
+  p {
+    margin: 0.25rem 0;
+  }
+}

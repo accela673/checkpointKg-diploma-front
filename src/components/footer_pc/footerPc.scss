@@ -1,0 +1,37 @@
+.footer-pc {
+  background-color: #3b82f6;
+  color: white;
+  padding: 1rem 0; // уменьшенная высота
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; // если экран сужается
+  }
+
+  .logo {
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+
+  .contact-info {
+    text-align: right;
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
