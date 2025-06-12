@@ -139,6 +139,21 @@
     "batken": "Баткенская область",
     "talas": "Таласская область"
   },
+  "confirmEmail": {
+  "title": "Подтверждение Email",
+  "accountActivated": "Аккаунт успешно активирован!",
+  "confirmError": "Ошибка при подтверждении Email",
+  "resendError": "Ошибка при повторной отправке кода",
+  "codeResent": "Код был повторно отправлен на адрес {{email}}",
+  "codeResentMessage": "Код повторно отправлен!",
+  "emailLabel": "Email",
+  "codeLabel": "Код подтверждения",
+  "confirmButton": "Подтвердить Email",
+  "confirming": "Подтверждение...",
+  "resendButton": "Отправить код повторно",
+  "sending": "Отправка...",
+  "resendIn": "Повторная отправка кода через {{seconds}}с"
+},
     "login": {
     "title": "Вход в аккаунт",
     "emailLabel": "Email",

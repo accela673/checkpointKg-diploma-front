@@ -38,7 +38,7 @@ const NavbarMobile = () => {
     localStorage.clear();
     closeMenu();
     navigate('/');
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (

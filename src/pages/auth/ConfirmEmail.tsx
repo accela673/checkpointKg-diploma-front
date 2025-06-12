@@ -52,7 +52,7 @@ const ConfirmEmail: React.FC = () => {
       if (response.status >= 200 && response.status < 300) {
         setResendSuccess(true);
         alert(t('confirmEmail.codeResent', { email }));
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (error) {
       console.log(error);

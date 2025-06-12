@@ -74,7 +74,7 @@ const AddHotelForm = () => {
         },
       });
       alert(t('addHotel.success'));
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error('Error adding hotel:', error);
       alert(t('addHotel.error'));

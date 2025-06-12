@@ -87,7 +87,7 @@ const AddRoomForm: React.FC = () => {
 
       console.log("Room added successfully:", response.data);
       alert(t("addRoom.success"));
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Error adding room:", error);
       alert(t("addRoom.error"));
