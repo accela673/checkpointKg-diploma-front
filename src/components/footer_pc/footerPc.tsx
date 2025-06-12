@@ -1,4 +1,4 @@
-import "./FooterPC.scss";
+import "./footerPc.scss";
 
 const FooterPC = () => {
   return (
