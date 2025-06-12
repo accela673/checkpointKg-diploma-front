@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const Home = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const checkSession = () => {
     const loginTime = localStorage.getItem("loginTime");
